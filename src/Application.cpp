@@ -65,6 +65,11 @@ void Application::Update() {
         particle->AddForce(wind);
     }
     
+    // Apply weight force to the particle
+    for (auto particle : particles) {
+        Vec2 weight = Vec2(0.0, 9.8 * PIXELS_PER_METER);
+        particle->AddForce(weight);
+    }
 
     // Integrate accel & vel to find the new position
     for (auto particle : particles)
