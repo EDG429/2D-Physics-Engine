@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "./Physics/Constants.h"
+#include "./Physics/Force.h"
 
 bool Application::IsRunning() {
     return running;
@@ -19,7 +20,10 @@ void Application::Setup() {
     bigBall->radius = 12;
     particles.push_back(bigBall);
 
-
+    liquid.x = 0;
+    liquid.y = Graphics::Height() * 0.5;
+    liquid.w = Graphics::Width();
+    liquid.h = Graphics::Height() * 0.5;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -79,21 +83,24 @@ void Application::Update() {
     // Set the time of the current frame to be used in the sext one
     timePreviousFrame = SDL_GetTicks();
 
-    // Apply wind force to the particle
+    // Apply forces
     for (auto particle : particles) {
+        // Apply wind force to the particle
         Vec2 wind = Vec2(1.0 * PIXELS_PER_METER, 0.0);
-        particle->AddForce(wind);
-    }
+        particle->AddForce(wind);    
     
-    // Apply weight force to the particle
-    for (auto particle : particles) {
+        // Apply weight force to the particle    
         Vec2 weight = Vec2(0.0,particle->mass * 9.8 * PIXELS_PER_METER);
-        particle->AddForce(weight);
-    }
+        particle->AddForce(weight);    
 
-    // Apply push force to the particle
-    for (auto particle : particles) {        
+        // Apply push force to the particle           
         particle->AddForce(pushForce);
+
+        // Apply a drag force if particles are inside the liquid
+        if (particle->position.y >= liquid.y) {
+            Vec2 drag = Force::GenerateDragForce(*particle, 0.01);
+            particle->AddForce(drag);
+        }
     }
 
     // Integrate accel & vel to find the new position
@@ -102,7 +109,7 @@ void Application::Update() {
         particle->Integrate(deltaTime);
     }
 
-    // Check the particle position and try to limit it, put a constraint. Keep the particle inside the boundaries of the screen
+    // Check the particle position vs boundaries and try to limit it, put a constraint. Keep the particle inside the boundaries of the screen
     for (auto particle : particles) {
         if (particle->position.x - particle->radius <= 0) {
             particle->position.x = particle->radius;
@@ -130,6 +137,11 @@ void Application::Update() {
 ///////////////////////////////////////////////////////////////////////////////
 void Application::Render() {
     Graphics::ClearScreen(0xFF056263);
+
+    // Draw liquid in the screen
+    Graphics::DrawFillRect(liquid.x + liquid.w * 0.5, liquid.y + liquid.h * 0.5, liquid.w, liquid.h, 0xFF6E3713);
+
+    // Draw particles
     for (auto particle : particles)
     {
         Graphics::DrawFillCircle(particle->position.x, particle->position.y, particle->radius, 0xFFFFFFFF);

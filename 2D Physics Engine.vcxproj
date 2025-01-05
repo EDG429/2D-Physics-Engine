@@ -142,6 +142,7 @@
     <ClCompile Include="src\Graphics.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Physics\Particle.cpp" />
+    <ClCompile Include="src\Physics\Force.cpp" />
     <ClCompile Include="src\Physics\Vec2.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +153,7 @@
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\Graphics.h" />
     <ClInclude Include="src\Physics\Constants.h" />
+    <ClInclude Include="src\Physics\Force.h" />
     <ClInclude Include="src\Physics\Particle.h" />
     <ClInclude Include="src\Physics\Vec2.h" />
   </ItemGroup>
