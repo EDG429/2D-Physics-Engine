@@ -15,3 +15,6 @@ Vec2 Force::GenerateDragForce(const Particle& particle, float k) {
 	}
 	return dragForce;
 }
+
+// TODO Generate friction force
+// TODO Generate spring force
