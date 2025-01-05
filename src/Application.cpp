@@ -15,7 +15,7 @@ void Application::Setup() {
     smallBall->radius = 4;
     particles.push_back(smallBall);
 
-    Particle* bigBall = new Particle(50, 200, 3.0);
+    Particle* bigBall = new Particle(200, 100, 3.0);
     bigBall->radius = 12;
     particles.push_back(bigBall);
 }
@@ -67,7 +67,7 @@ void Application::Update() {
     
     // Apply weight force to the particle
     for (auto particle : particles) {
-        Vec2 weight = Vec2(0.0, 9.8 * PIXELS_PER_METER);
+        Vec2 weight = Vec2(0.0,particle->mass * 9.8 * PIXELS_PER_METER);
         particle->AddForce(weight);
     }
 
