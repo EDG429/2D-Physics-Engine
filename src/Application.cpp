@@ -18,6 +18,8 @@ void Application::Setup() {
     Particle* bigBall = new Particle(200, 100, 3.0);
     bigBall->radius = 12;
     particles.push_back(bigBall);
+
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -27,13 +29,31 @@ void Application::Input() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
-            case SDL_QUIT:
+        case SDL_QUIT:
+            running = false;
+            break;
+        case SDL_KEYDOWN:
+            if (event.key.keysym.sym == SDLK_ESCAPE)
                 running = false;
-                break;
-            case SDL_KEYDOWN:
-                if (event.key.keysym.sym == SDLK_ESCAPE)
-                    running = false;
-                break;
+            if (event.key.keysym.sym == SDLK_UP)
+                pushForce.y = -50 * PIXELS_PER_METER;
+            if (event.key.keysym.sym == SDLK_RIGHT)
+                pushForce.x = 50 * PIXELS_PER_METER;
+            if (event.key.keysym.sym == SDLK_DOWN)
+                pushForce.y = 50 * PIXELS_PER_METER;
+            if (event.key.keysym.sym == SDLK_LEFT)
+                pushForce.x = -50 * PIXELS_PER_METER;
+            break;
+        case SDL_KEYUP:
+            if (event.key.keysym.sym == SDLK_UP)
+                pushForce.y = 0;
+            if (event.key.keysym.sym == SDLK_RIGHT)
+                pushForce.x = 0;
+            if (event.key.keysym.sym == SDLK_DOWN)
+                pushForce.y = 0;
+            if (event.key.keysym.sym == SDLK_LEFT)
+                pushForce.x = 0;
+            break;
         }
     }
 }
@@ -69,6 +89,11 @@ void Application::Update() {
     for (auto particle : particles) {
         Vec2 weight = Vec2(0.0,particle->mass * 9.8 * PIXELS_PER_METER);
         particle->AddForce(weight);
+    }
+
+    // Apply push force to the particle
+    for (auto particle : particles) {        
+        particle->AddForce(pushForce);
     }
 
     // Integrate accel & vel to find the new position
