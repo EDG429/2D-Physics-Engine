@@ -11,8 +11,13 @@ bool Application::IsRunning() {
 void Application::Setup() {
     running = Graphics::OpenWindow();
 
-    particle = new Particle(50, 100, 1.0f);
-    particle->radius = 4;
+    Particle* smallBall = new Particle(50, 100, 1.0);
+    smallBall->radius = 4;
+    particles.push_back(smallBall);
+
+    Particle* bigBall = new Particle(50, 200, 3.0);
+    bigBall->radius = 12;
+    particles.push_back(bigBall);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -55,30 +60,38 @@ void Application::Update() {
     timePreviousFrame = SDL_GetTicks();
 
     // Apply wind force to the particle
-    Vec2 wind = Vec2(1.0 * PIXELS_PER_METER, 0.0);
-    particle->AddForce(wind);
+    for (auto particle : particles) {
+        Vec2 wind = Vec2(1.0 * PIXELS_PER_METER, 0.0);
+        particle->AddForce(wind);
+    }
+    
 
     // Integrate accel & vel to find the new position
-    particle->Integrate(deltaTime);
+    for (auto particle : particles)
+    {
+        particle->Integrate(deltaTime);
+    }
 
     // Check the particle position and try to limit it, put a constraint. Keep the particle inside the boundaries of the screen
-    if (particle->position.x - particle->radius <= 0) {
-        particle->position.x = particle->radius;
-        particle->velocity.x *= -1;
-    }
-    else if (particle->position.x + particle->radius >= screenWidth) {
-        particle->position.x = screenWidth - particle->radius;
-        particle->velocity.x *= -1;
-    }
+    for (auto particle : particles) {
+        if (particle->position.x - particle->radius <= 0) {
+            particle->position.x = particle->radius;
+            particle->velocity.x *= -1;
+        }
+        else if (particle->position.x + particle->radius >= screenWidth) {
+            particle->position.x = screenWidth - particle->radius;
+            particle->velocity.x *= -1;
+        }
 
-    if (particle->position.y - particle->radius <= 0) {
-        particle->position.y = particle->radius;
-        particle->velocity.y *= -1;
+        if (particle->position.y - particle->radius <= 0) {
+            particle->position.y = particle->radius;
+            particle->velocity.y *= -1;
+        }
+        else if (particle->position.y + particle->radius >= screenHeight) {
+            particle->position.y = screenHeight - particle->radius;
+            particle->velocity.y *= -1;
+        }      
     }
-    else if (particle->position.y + particle->radius >= screenHeight) {
-        particle->position.y = screenHeight - particle->radius;
-        particle->velocity.y *= -1;
-    }      
 
 }
 
@@ -87,7 +100,10 @@ void Application::Update() {
 ///////////////////////////////////////////////////////////////////////////////
 void Application::Render() {
     Graphics::ClearScreen(0xFF056263);
-    Graphics::DrawFillCircle(particle->position.x, particle->position.y, particle->radius, 0xFFFFFFFF);
+    for (auto particle : particles)
+    {
+        Graphics::DrawFillCircle(particle->position.x, particle->position.y, particle->radius, 0xFFFFFFFF);
+    }
     Graphics::RenderFrame();
 }
 
@@ -95,7 +111,10 @@ void Application::Render() {
 // Destroy function to delete objects and close the window
 ///////////////////////////////////////////////////////////////////////////////
 void Application::Destroy() {
-    delete particle;
+    for (auto particle : particles)
+    {
+       delete particle;
+    }
 
     Graphics::CloseWindow();
 }
