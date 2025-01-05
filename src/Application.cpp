@@ -54,8 +54,9 @@ void Application::Update() {
     // Set the time of the current frame to be used in the sext one
     timePreviousFrame = SDL_GetTicks();
 
-    // Proceed to update the objects on the scene
-    particle->acceleration = Vec2(6.0 * PIXELS_PER_METER, 9.8 * PIXELS_PER_METER);
+    // Apply wind force to the particle
+    Vec2 wind = Vec2(1.0 * PIXELS_PER_METER, 0.0);
+    particle->AddForce(wind);
 
     // Integrate accel & vel to find the new position
     particle->Integrate(deltaTime);
@@ -63,20 +64,20 @@ void Application::Update() {
     // Check the particle position and try to limit it, put a constraint. Keep the particle inside the boundaries of the screen
     if (particle->position.x - particle->radius <= 0) {
         particle->position.x = particle->radius;
-        particle->velocity.x *= -0.9;
+        particle->velocity.x *= -1;
     }
     else if (particle->position.x + particle->radius >= screenWidth) {
         particle->position.x = screenWidth - particle->radius;
-        particle->velocity.x *= -0.9;
+        particle->velocity.x *= -1;
     }
 
     if (particle->position.y - particle->radius <= 0) {
         particle->position.y = particle->radius;
-        particle->velocity.y *= -0.9;
+        particle->velocity.y *= -1;
     }
     else if (particle->position.y + particle->radius >= screenHeight) {
         particle->position.y = screenHeight - particle->radius;
-        particle->velocity.y *= -0.9;
+        particle->velocity.y *= -1;
     }      
 
 }
