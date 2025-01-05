@@ -11,14 +11,14 @@ bool Application::IsRunning() {
 ///////////////////////////////////////////////////////////////////////////////
 void Application::Setup() {
     running = Graphics::OpenWindow();
-
+    /*
     Particle* smallBall = new Particle(50, 100, 1.0);
     smallBall->radius = 4;
     particles.push_back(smallBall);
 
     Particle* bigBall = new Particle(200, 100, 3.0);
     bigBall->radius = 12;
-    particles.push_back(bigBall);
+    particles.push_back(bigBall);*/
 
     liquid.x = 0;
     liquid.y = Graphics::Height() * 0.5;
@@ -58,6 +58,15 @@ void Application::Input() {
             if (event.key.keysym.sym == SDLK_LEFT)
                 pushForce.x = 0;
             break;
+        case SDL_MOUSEBUTTONDOWN:
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                int x, y;
+                SDL_GetMouseState(&x, &y);
+                Particle* particle = new Particle(x, y, 1.0);
+                particle->radius = 5;
+                particles.push_back(particle);
+            }
+            break;
         }
     }
 }
@@ -85,9 +94,11 @@ void Application::Update() {
 
     // Apply forces
     for (auto particle : particles) {
-        // Apply wind force to the particle
-        Vec2 wind = Vec2(1.0 * PIXELS_PER_METER, 0.0);
-        particle->AddForce(wind);    
+        // Apply wind force to the particle if we are in the upper part of the screen
+        if (particle->position.y <= screenHeight) {
+            Vec2 wind = Vec2(1.0 * PIXELS_PER_METER, 0.0);
+            particle->AddForce(wind);   
+        }         
     
         // Apply weight force to the particle    
         Vec2 weight = Vec2(0.0,particle->mass * 9.8 * PIXELS_PER_METER);
