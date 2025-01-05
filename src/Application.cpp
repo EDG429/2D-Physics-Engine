@@ -95,7 +95,7 @@ void Application::Update() {
     // Apply forces
     for (auto particle : particles) {
         // Apply wind force to the particle if we are in the upper part of the screen
-        if (particle->position.y <= screenHeight) {
+        if (particle->position.y < liquid.y) {
             Vec2 wind = Vec2(1.0 * PIXELS_PER_METER, 0.0);
             particle->AddForce(wind);   
         }         
@@ -140,7 +140,6 @@ void Application::Update() {
             particle->velocity.y *= -1;
         }      
     }
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////
