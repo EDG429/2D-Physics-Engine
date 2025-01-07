@@ -92,7 +92,7 @@ void Application::Update() {
     // Set the time of the current frame to be used in the sext one
     timePreviousFrame = SDL_GetTicks();
 
-    // Apply forces
+    // Apply forces to the particles
     for (auto particle : particles) {
         // Apply wind force to the particle if we are in the upper part of the screen
         if (particle->position.y < liquid.y) {
@@ -106,6 +106,9 @@ void Application::Update() {
 
         // Apply push force to the particle           
         particle->AddForce(pushForce);
+
+        // Apply friction force        
+
 
         // Apply a drag force if particles are inside the liquid
         if (particle->position.y >= liquid.y) {
