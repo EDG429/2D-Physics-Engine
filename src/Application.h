@@ -2,26 +2,23 @@
 #define APPLICATION_H
 
 #include "./Graphics.h"
-#include "./Physics/Particle.h"
+#include "./Physics/Body.h"
 #include <vector>
 
 class Application {
-    private:
-        bool running = false;
-        std::vector<Particle*> particles;
-        Vec2 pushForce = Vec2(0.0, 0.0);
-        
-        SDL_Rect liquid;
+private:
+    bool running = false;
+    std::vector<Body*> bodies;
 
-    public:
-        Application() = default;
-        ~Application() = default;
-        bool IsRunning();
-        void Setup();
-        void Input();
-        void Update();
-        void Render();
-        void Destroy();
+public:
+    Application() = default;
+    ~Application() = default;
+    bool IsRunning();
+    void Setup();
+    void Input();
+    void Update();
+    void Render();
+    void Destroy();
 };
 
 #endif
