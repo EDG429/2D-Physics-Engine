@@ -1,0 +1,28 @@
+#ifndef BODY_H
+#define BODY_H
+
+#include "Vec2.h"
+#include "shape.h"
+
+struct Body {
+    Vec2 position;
+    Vec2 velocity;
+    Vec2 acceleration;
+
+    Vec2 sumForces;
+
+    float mass;
+    float invMass;
+
+    Shape* shape = NULL;
+
+    Body(const Shape& shape, float x, float y, float mass);
+    ~Body();
+
+    void AddForce(const Vec2& force);
+    void ClearForces();
+
+    void Integrate(float dt);
+};
+
+#endif
