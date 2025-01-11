@@ -4,6 +4,11 @@
 Body::Body(const Shape& shape, float x, float y, float mass) {
     this->shape = shape.Clone();
     this->position = Vec2(x, y);
+    this->velocity = Vec2(0, 0);
+    this->acceleration = Vec2(0, 0);
+    this->rotation = 0.0;
+    this->angularVelocity = 0.0;
+    this->angularAcceleration = 0.0;
     this->mass = mass;
     if (mass != 0.0) {
         this->invMass = 1.0 / mass;
@@ -26,7 +31,7 @@ void Body::ClearForces() {
     sumForces = Vec2(0.0, 0.0);
 }
 
-void Body::Integrate(float dt) {
+void Body::IntegrateLinear(float dt) {
     // Find the acceleration based on the forces that are being applied and the mass
     acceleration = sumForces * invMass;
 
