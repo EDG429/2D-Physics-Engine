@@ -18,6 +18,12 @@ ShapeType CircleShape::GetType() const {
 	return CIRCLE;
 };
 
+float CircleShape::GetMomentOfInertia() const {
+	// For solid circles, the moment of inertia is 1/2 * r^2
+	// But this still needs to be multiplied by the rigidbody's mass
+	return 0.5 * (radius * radius);
+};
+
 PolygonShape::PolygonShape(const std::vector<Vec2> vertices) {
 	//
 };
@@ -34,6 +40,11 @@ ShapeType PolygonShape::GetType() const {
 	return POLYGON;
 };
 
+float PolygonShape::GetMomentOfInertia() const {
+	// TODO
+	return 0.0;
+}
+
 BoxShape::BoxShape(float width, float height) {
 	//
 };
@@ -49,3 +60,9 @@ BoxShape::~BoxShape() {
 ShapeType BoxShape::GetType() const {
 	return BOX;
 };
+
+float BoxShape::GetMomentOfInertia() const {
+	// For a rectangle, the moment of inertia is 1/12 * (w^2 + h^2)
+	// But this still needs to be multiplied by the rigidbody's mass
+	return (0.083333) * (width * width + height * height);
+}
