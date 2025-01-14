@@ -5,6 +5,9 @@
 #include "shape.h"
 
 struct Body {
+    // Collision detection
+    bool isColliding = false;
+
     // Linear motion
     Vec2 position;
     Vec2 velocity;
