@@ -62,22 +62,16 @@ void Application::Update() {
     // Apply forces to the bodies
     for (auto body : bodies) {
         // Apply the weight force
-        //Vec2 weight = Vec2(0.0, body->mass * 9.8 * PIXELS_PER_METER);
-        //body->AddForce(weight);
+        // Vec2 weight = Vec2(0.0, body->mass * 9.8 * PIXELS_PER_METER);
+        // body->AddForce(weight);
 
-        //float torque = 120;
-        //body->AddTorque(torque);
+        float torque = 1200;
+        body->AddTorque(torque);
     }
 
     // Integrate the acceleration and velocity to estimate the new position
     for (auto body : bodies) {
-        body->IntegrateLinear(deltaTime);
-        body->IntegrateAngular(deltaTime);
-        bool isPolygon = body->shape->GetType() == POLYGON || body->shape->GetType() == BOX;
-        if (isPolygon) {
-            PolygonShape* polygonShape = (PolygonShape*)body->shape;
-            polygonShape->UpdateVertices(body->rotation, body->position);
-        }
+        body->Update(deltaTime);
     }
 
     // Check the boundaries of the window applying a hardcoded bounce flip in velocity
