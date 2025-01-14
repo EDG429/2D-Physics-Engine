@@ -74,3 +74,13 @@ void Body::IntegrateAngular(float dt) {
     // Clear the torque for the next step
     ClearTorque();
 }
+
+void Body::Update(float dt) {
+    IntegrateLinear(dt);
+    IntegrateAngular(dt);
+    bool isPolygon = shape->GetType() == POLYGON || shape->GetType() == BOX;
+    if (isPolygon) {
+        PolygonShape* polygonShape = (PolygonShape*) shape;
+        polygonShape->UpdateVertices(rotation, position);
+    }
+}
