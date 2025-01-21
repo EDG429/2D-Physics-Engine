@@ -14,12 +14,12 @@ bool Application::IsRunning() {
 void Application::Setup() {
     running = Graphics::OpenWindow();
 
-    Body* bigBall = new Body(CircleShape(100), 100, 100, 1.0);
-    Body* smallBall = new Body(CircleShape(50), 500, 200, 1.0);
+    Body* bigBall = new Body(CircleShape(200), Graphics::Width()/2.0, Graphics::Height()/2.0, 0.0);
+    //Body* smallBall = new Body(CircleShape(50), 500, 200, 1.0);
     //Body* box = new Body(BoxShape(200, 100), Graphics::Width() / 2.0, Graphics::Height() / 2.0, 1.0);
     
     bodies.push_back(bigBall);
-    bodies.push_back(smallBall);
+    //bodies.push_back(smallBall);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -36,12 +36,12 @@ void Application::Input() {
             if (event.key.keysym.sym == SDLK_ESCAPE)
                 running = false;
             break;       
-        case SDL_MOUSEMOTION:
+        case SDL_MOUSEBUTTONDOWN:
             int x, y;
             SDL_GetMouseState(&x, &y);
-            bodies[0]->position.x = x;
-            bodies[0]->position.y = y;
-            // ...
+            Body* smallBall = new Body(CircleShape(40), x, y, 1.0);
+            smallBall->restitution = 0.9;
+            bodies.push_back(smallBall);
             break;
         }
     }
@@ -68,16 +68,16 @@ void Application::Update() {
 
     // Apply forces to the bodies
     for (auto body : bodies) {
-       /* // Apply the weight force
+       // Apply the weight force
         Vec2 weight = Vec2(0.0, body->mass * 9.8 * PIXELS_PER_METER);
         body->AddForce(weight);
 
         // Apply the wind force
-        Vec2 wind = Vec2(20.0 * PIXELS_PER_METER,0.0);
+        Vec2 wind = Vec2(2.0 * PIXELS_PER_METER,0.0);
         body->AddForce(wind);
 
         //float torque = 200;
-        //body->AddTorque(torque);*/
+        //body->AddTorque(torque);
     }
 
     // Integrate the acceleration and velocity to estimate the new position
@@ -95,7 +95,8 @@ void Application::Update() {
             b->isColliding = false;
             Contact contact;
             if (CollisionDetection::IsColliding(a, b, contact)) {
-                // We have a collison
+                // We have a collison, we resolve it using the impulse method
+                contact.ResolveCollision();
                 // Contact information of the collision
                 Graphics::DrawFillCircle(contact.start.x, contact.start.y, 3, 0xFFFF00FF);
                 Graphics::DrawFillCircle(contact.end.x, contact.end.y, 3, 0xFFFF00FF);
